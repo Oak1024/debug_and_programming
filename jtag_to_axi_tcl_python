@@ -1,0 +1,23 @@
+TCL server, Python Client. it would be better than TCL generate .txt file and python read it.
+
+https://forums.xilinx.com/t5/Vivado-Debug-and-Power/C-API-for-JTAG-to-AXI-Master-Interface/td-p/603495
+
+grab a 10-line TCL server example from the web, and a similar example for a Python.
+
+Build the TCL commands in Python, send to TCL via send(..) , let TCL execute them as-is (using TCL eval $cmd).
+
+Return read data to Python using this TCL code (took me time to find 'report_hw_axi_txn ' as it is not mentioned in PG174):
+
+  puts $sock [report_hw_axi_txn -t x4 -w 16 my_txn]
+
+Don't forget to print some "response end" token from TCL into the $sock so that the Python client knows to stop reading from socket.
+
+Then in Python parse the return data.
+
+This actually seems to work pretty fast as well. At least for a lab debug scenario. 
+
+Can use burst read/write as well to improve performance. (read/write more than 1 value)
+
+Kind of awkward but good enough I guess.
+
+Hope this helps someone..
